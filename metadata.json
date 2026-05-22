@@ -1,0 +1,8 @@
+{
+  "name": "OSCA - San Juan 5-19",
+  "description": "A centralized LGU platform for senior citizen welfare management, registration, and service delivery.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
