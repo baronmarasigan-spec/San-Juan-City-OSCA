@@ -29,7 +29,7 @@ import {
   Megaphone,
   Users
 } from 'lucide-react';
-import { cn, normalizeCashGiftResponse } from './lib/utils';
+import { cn, normalizeCashGiftResponse, normalizeWeddingIncentiveResponse, normalizeBirthdayIncentiveResponse } from './lib/utils';
 import { API_URL, LCR_API_URL } from './lib/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -340,28 +340,73 @@ export default function AdminDashboard({
       }).length;
       const pendingId = idList.filter((i: any) => (i.status?.issuance_status || i.id_status || '').toLowerCase() === 'pending').length;
 
-      // 3. Pending Benefits (Annual Cash Gift as priority)
+      // 3. Pending Benefits (Aggregated from enabled benefit types)
       let appsArray: any[] = [];
+      
+      // 3a. Annual Cash Gift (defensive)
       try {
         const annualRes = await fetch(`${API_URL}/benefit-applications`, { headers });
-        if (annualRes.status === 429) {
-          console.warn("Throttled: Benefits fetch returned 429");
-        } else if (annualRes.ok) {
+        if (annualRes.ok) {
           const annualData = await annualRes.json();
           const annualApps = normalizeCashGiftResponse(annualData);
-          appsArray = Array.isArray(annualApps) ? annualApps : [];
-        } else {
-          console.error(`Benefits fetch failed: ${annualRes.status}`);
+          if (Array.isArray(annualApps)) {
+            appsArray.push(...annualApps);
+          }
         }
       } catch (e) {
-        console.error("Error fetching benefits:", e);
+        console.error("Error fetching annual cash gift for notifications:", e);
+      }
+
+      // 3b. Social Pension (defensive)
+      try {
+        const pensionRes = await fetch(`${API_URL}/social-pension`, { headers });
+        if (pensionRes.ok) {
+          const pensionData = await pensionRes.json();
+          const pensionApps = normalizeCashGiftResponse(pensionData); // identical format
+          if (Array.isArray(pensionApps)) {
+            appsArray.push(...pensionApps);
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching social pension for notifications:", e);
+      }
+
+      // 3c. Birthday Cash Incentives
+      try {
+        const birthdayRes = await fetch(`${API_URL}/birthday-incentives`, { headers });
+        if (birthdayRes.ok) {
+          const birthdayData = await birthdayRes.json();
+          const birthdayApps = normalizeBirthdayIncentiveResponse(birthdayData);
+          if (Array.isArray(birthdayApps)) {
+            appsArray.push(...birthdayApps);
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching birthday incentives for notifications:", e);
+      }
+
+      // 3d. 50th Wedding Anniversary Incentive
+      try {
+        const weddingRes = await fetch(`${API_URL}/wedding-anniversary-incentives`, { headers });
+        if (weddingRes.ok) {
+          const weddingData = await weddingRes.json();
+          const weddingApps = normalizeWeddingIncentiveResponse(weddingData);
+          if (Array.isArray(weddingApps)) {
+            appsArray.push(...weddingApps);
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching wedding incentives for notifications:", e);
       }
       
       const newBenefits = appsArray.filter((a: any) => {
-        const date = a.created_at || a.updated_at;
+        const date = a.created_at || a.updated_at || a.applied_date;
         return date && new Date(date).getTime() > oneDayAgo;
       }).length;
-      const pendingBenefits = appsArray.filter((a: any) => (a.status || '').toLowerCase() === 'pending').length;
+      const pendingBenefits = appsArray.filter((a: any) => {
+        const statStr = (a.status || a.reg_status || '').toLowerCase();
+        return statStr === 'pending';
+      }).length;
 
       // 4. Feedback
       let feedbacks: any[] = [];
@@ -533,6 +578,16 @@ export default function AdminDashboard({
         }
       } catch (e) {}
 
+      let birthdayCount = 0;
+      try {
+        const birthdayRes = await fetch(`${API_URL}/birthday-incentives`, { headers });
+        if (birthdayRes.ok) {
+          const birthdayData = await birthdayRes.json();
+          const birthdayArray = birthdayData.data?.data || birthdayData.data || birthdayData;
+          birthdayCount = Array.isArray(birthdayArray) ? birthdayArray.length : 0;
+        }
+      } catch (e) {}
+
       // Feedback Stats
       let feedbacks: any[] = [];
       try {
@@ -566,7 +621,7 @@ export default function AdminDashboard({
           annualCashGift: annualCount,
           socialPension: pensionCount,
           weddingIncentive: weddingCount,
-          birthdayIncentive: 0 // Placeholder
+          birthdayIncentive: birthdayCount
         },
         feedback: fStats
       });
@@ -1945,7 +2000,7 @@ export default function AdminDashboard({
                 },
                 { 
                   title: 'Benefit Applications', 
-                  value: stats.benefits.annualCashGift + stats.benefits.socialPension, 
+                  value: stats.benefits.weddingIncentive + stats.benefits.birthdayIncentive, 
                   sub: 'Total Service Requests', 
                   icon: Heart, 
                   color: 'text-rose-600', 
@@ -2073,8 +2128,8 @@ export default function AdminDashboard({
                 
                 <div className="space-y-6">
                   {[
-                    { label: 'Annual Cash Gift', value: stats.benefits.annualCashGift, color: 'bg-rose-500', total: Math.max(1, stats.benefits.annualCashGift + stats.benefits.socialPension) },
-                    { label: 'Social Pension (DSWD)', value: stats.benefits.socialPension, color: 'bg-blue-500', total: Math.max(1, stats.benefits.annualCashGift + stats.benefits.socialPension) },
+                    { label: 'Birthday Cash Incentives', value: stats.benefits.birthdayIncentive, color: 'bg-emerald-500', total: Math.max(1, stats.benefits.weddingIncentive + stats.benefits.birthdayIncentive) },
+                    { label: '50th Wedding Anniversary Incentive', value: stats.benefits.weddingIncentive, color: 'bg-amber-500', total: Math.max(1, stats.benefits.weddingIncentive + stats.benefits.birthdayIncentive) },
                   ].map((service, i) => (
                     <div key={i}>
                       <div className="flex justify-between mb-2">

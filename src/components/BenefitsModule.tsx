@@ -12,20 +12,6 @@ import { AnnualCashGiftForm, SocialPensionForm, WeddingAnniversaryForm, Birthday
 
 const benefitsList = [
   { 
-    id: 'annual-cash-gift', 
-    name: 'Annual Cash Gift', 
-    icon: Gift, 
-    color: 'bg-rose-50 text-rose-600',
-    description: 'Manage yearly birthday financial assistance'
-  },
-  { 
-    id: 'social-pension', 
-    name: 'Social Pension (DSWD)', 
-    icon: Wallet, 
-    color: 'bg-blue-50 text-blue-600',
-    description: 'Monthly stipend for indigent senior citizens'
-  },
-  { 
     id: '50th-wedding-anniversary-incentive', 
     name: '50th Wedding Anniversary Incentive', 
     icon: Heart, 
