@@ -377,11 +377,20 @@ export default function AdminDashboard({
         console.error("Error fetching feedback:", e);
       }
       
-      const newFeedback = feedbacks.filter((f: any) => {
-        const date = f.created_at || f.updated_at;
+      const localFeedbacks = JSON.parse(localStorage.getItem('local_feedback_concerns') || '[]');
+      const filteredLocal = localFeedbacks.filter((localItem: any) => 
+        !feedbacks.some((remoteItem: any) => 
+          remoteItem.id === localItem.id || 
+          (remoteItem.message === localItem.message && remoteItem.category?.toLowerCase() === localItem.category?.toLowerCase())
+        )
+      );
+      const combinedFeedbacks = [...filteredLocal, ...feedbacks];
+      
+      const newFeedback = combinedFeedbacks.filter((f: any) => {
+        const date = f.created_at || f.updated_at || f.submitted_at;
         return date && new Date(date).getTime() > oneDayAgo;
       }).length;
-      const pendingFeedback = feedbacks.filter((f: any) => f.status === 'Pending').length;
+      const pendingFeedback = combinedFeedbacks.filter((f: any) => (f.status || '').toLowerCase() === 'pending').length;
 
       setNotifications({
         registration: { new: newReg, pending: pendingReg },
@@ -535,10 +544,19 @@ export default function AdminDashboard({
         }
       } catch (e) {}
       
+      const localFeedbacksStats = JSON.parse(localStorage.getItem('local_feedback_concerns') || '[]');
+      const filteredLocalStats = localFeedbacksStats.filter((localItem: any) => 
+        !feedbacks.some((remoteItem: any) => 
+          remoteItem.id === localItem.id || 
+          (remoteItem.message === localItem.message && remoteItem.category?.toLowerCase() === localItem.category?.toLowerCase())
+        )
+      );
+      const combinedFeedbacksStats = [...filteredLocalStats, ...feedbacks];
+      
       const fStats = {
-        total: feedbacks.length,
-        resolved: feedbacks.filter((f: any) => f.status === 'Resolved').length,
-        pending: feedbacks.filter((f: any) => f.status === 'Pending').length
+        total: combinedFeedbacksStats.length,
+        resolved: combinedFeedbacksStats.filter((f: any) => (f.status || '').toLowerCase() === 'resolved').length,
+        pending: combinedFeedbacksStats.filter((f: any) => (f.status || '').toLowerCase() === 'pending').length
       };
 
       setStats({

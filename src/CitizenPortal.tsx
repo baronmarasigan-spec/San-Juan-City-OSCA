@@ -63,8 +63,6 @@ import { IDCard } from "./components/IDCard";
 import { QRCodeSVG } from "qrcode.react";
 
 const benefitsList = [
-  "Annual Cash Gift",
-  "Social Pension",
   "50th Wedding Anniversary Incentive",
   "Birthday Cash Incentives",
 ];
@@ -4052,6 +4050,8 @@ function FeedbackForm() {
 
   const fetchHistory = useCallback(async () => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
     if (!token) return;
     try {
       const response = await fetch(
@@ -4064,11 +4064,27 @@ function FeedbackForm() {
         },
       );
       const result = await response.json();
-      if (response.ok) {
-        setHistory(result.data || []);
-      }
+      const remoteData = response.ok ? (result.data || []) : [];
+      const localData = JSON.parse(localStorage.getItem('local_feedback_concerns') || '[]');
+      
+      const user_id = user?.id ?? user?.data?.id ?? "";
+      const userLocal = localData.filter((item: any) => String(item.user_id) === String(user_id));
+      
+      const filteredLocal = userLocal.filter((localItem: any) => 
+        !remoteData.some((remoteItem: any) => 
+          remoteItem.id === localItem.id || 
+          (remoteItem.message === localItem.message && remoteItem.category?.toLowerCase() === localItem.category?.toLowerCase())
+        )
+      );
+      
+      setHistory([...filteredLocal, ...remoteData]);
     } catch (err) {
       console.error("Error fetching history:", err);
+      // Fallback to local storage on error
+      const localData = JSON.parse(localStorage.getItem('local_feedback_concerns') || '[]');
+      const user_id = user?.id ?? user?.data?.id ?? "";
+      const userLocal = localData.filter((item: any) => String(item.user_id) === String(user_id));
+      setHistory(userLocal);
     }
   }, []);
 
@@ -4114,18 +4130,48 @@ function FeedbackForm() {
       }
 
       const user_id = user.id ?? user.data?.id ?? "";
+      const scid_number = user.scid_number || user.scid || "N/A";
+      const uFirst = user.first_name || user.username || "Citizen";
+      const uLast = user.last_name || "";
 
       formDataToSend.append("citizen_id", String(citizen_id));
       formDataToSend.append("user_id", String(user_id));
-      formDataToSend.append("scid_number", "N/A");
-      formDataToSend.append("first_name", "N/A");
-      formDataToSend.append("last_name", "N/A");
-      formDataToSend.append("address", "N/A");
-      formDataToSend.append("contact_number", "0000000000");
+      formDataToSend.append("scid_number", String(scid_number));
+      formDataToSend.append("first_name", String(uFirst));
+      formDataToSend.append("last_name", String(uLast));
+      formDataToSend.append("address", String(user.address || "N/A"));
+      formDataToSend.append("contact_number", String(user.contact_number || "0000000000"));
       formDataToSend.append("email", user.email || "default@email.com");
       formDataToSend.append("category", formData.category.toLowerCase());
       formDataToSend.append("subject", `${formData.category} Submission`);
       formDataToSend.append("message", formData.description);
+
+      // Save a local storage copy for instant notification & sync inside preview
+      const localNewFeedback = {
+        id: Date.now(),
+        submitted_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        user_id: String(user_id),
+        sender_name: `${uFirst} ${uLast}`.trim(),
+        first_name: uFirst,
+        last_name: uLast,
+        scid_number: scid_number,
+        message: formData.description,
+        category: formData.category,
+        status: 'pending',
+        email: user.email || 'default@email.com',
+        contact_number: user.contact_number || '0000000000',
+        barangay: user.barangay || 'N/A',
+        contact: {
+          address: user.address || 'N/A',
+          barangay: user.barangay || 'N/A',
+          contact_number: user.contact_number || '0000000000',
+          email: user.email || 'default@email.com',
+        }
+      };
+
+      const existingLocal = JSON.parse(localStorage.getItem('local_feedback_concerns') || '[]');
+      localStorage.setItem('local_feedback_concerns', JSON.stringify([localNewFeedback, ...existingLocal]));
 
       const response = await fetch(
         `${API_URL}/feedback-concerns`,
@@ -4150,8 +4196,9 @@ function FeedbackForm() {
         }, 3000);
       } else {
         setError(
-          data.message || "Failed to submit feedback. Please try again.",
+          data.message || "Failed to submit feedback. Saving locally. Please check admin.",
         );
+        fetchHistory();
       }
     } catch (err) {
       console.error("Submission error:", err);

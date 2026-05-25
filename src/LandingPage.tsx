@@ -265,9 +265,6 @@ export default function LandingPage({
               >
                 Get Started
               </button>
-              <button className="w-full sm:w-auto px-12 py-5 bg-white text-slate-900 border border-slate-200 rounded-2xl font-semibold text-base tracking-wide shadow-sm hover:bg-slate-50 transition-all">
-                Learn More
-              </button>
             </div>
           </motion.div>
         </div>
