@@ -321,6 +321,10 @@ export default function AdminDashboard({
       let idList: any[] = [];
       try {
         const idRes = await fetch(`${API_URL}/id-issuances`, { headers });
+        if (idRes.status === 401) {
+          onSignOut();
+          return;
+        }
         if (idRes.status === 429) {
           console.warn("Throttled: ID fetch returned 429");
         } else if (idRes.ok) {
@@ -527,6 +531,10 @@ export default function AdminDashboard({
       let masterArray: any[] = [];
       try {
         const masterRes = await fetch(`${API_URL}/masterlist`, { headers });
+        if (masterRes.status === 401) {
+          onSignOut();
+          return;
+        }
         if (masterRes.status === 429) {
           console.warn("Throttled: Masterlist fetch returned 429");
         } else if (masterRes.ok) {

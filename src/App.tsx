@@ -120,6 +120,11 @@ export default function App() {
         console.error(`Fetch applications error: ${response.status} ${response.statusText}`);
         const errorText = await response.text();
         console.error("Error details:", errorText);
+        if (response.status === 401) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          navigate('/');
+        }
         return;
       }
 
