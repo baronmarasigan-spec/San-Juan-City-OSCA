@@ -30,7 +30,7 @@ export const OscaApplicationForm = ({ record, isOpen, onClose }: OscaApplication
   const resetZoom = () => setZoom(1);
 
   const formatDate = (dateString: string | null | undefined) => {
-    if (!dateString) return '_________________';
+    if (!dateString) return '';
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return dateString;
@@ -99,10 +99,10 @@ export const OscaApplicationForm = ({ record, isOpen, onClose }: OscaApplication
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 overflow-auto bg-slate-500/5 flex justify-center p-8 print:p-0 print:bg-white print:overflow-visible no-scrollbar">
+        <div className="flex-1 overflow-auto bg-slate-500/5 flex items-start justify-center p-8 print:p-0 print:bg-white print:overflow-visible no-scrollbar">
           <div 
             id="printable-form" 
-            className="bg-white p-[35px] text-black font-serif leading-none shadow-sm origin-top transition-transform duration-200 print:shadow-none print:transform-none print:p-0 print:m-0 print:w-full"
+            className="bg-white p-[35px] text-black font-poppins leading-none shadow-sm origin-top transition-transform duration-200 print:shadow-none print:transform-none print:p-0 print:m-0 print:w-full"
             style={{ 
               width: '720px',
               minHeight: '1020px',
@@ -115,135 +115,151 @@ export const OscaApplicationForm = ({ record, isOpen, onClose }: OscaApplication
             {/* Header Logos */}
             <div className="flex items-center justify-center gap-8 mb-3">
               <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Bagong_Pilipinas_logo.png" 
-                className="w-16 h-16 object-contain" 
-                alt="Bagong Pilipinas"
-                referrerPolicy="no-referrer"
-              />
-              <img 
                 src="https://res.cloudinary.com/dx20khqe5/image/upload/v1777035946/Seal_of_San_Juan__Metro_Manila_1_k5lmzn.png" 
                 className="w-16 h-16 object-contain" 
                 alt="San Juan Seal"
                 referrerPolicy="no-referrer"
               />
-              <img 
-                src="https://res.cloudinary.com/dx20khqe5/image/upload/v1777035949/Group_271_rxyfrp.png" 
-                className="w-16 h-16 object-contain" 
-                alt="Makabagong San Juan"
-                referrerPolicy="no-referrer"
-              />
             </div>
             
-            <h1 className="text-[12px] font-bold uppercase tracking-tight">REPUBLIC OF THE PHILIPPINES</h1>
-            <h2 className="text-lg font-bold uppercase mt-0.5">OFFICE OF THE SENIOR CITIZENS AFFAIRS (OSCA)</h2>
-            <p className="text-[12px] font-bold mt-0.5">City of San Juan, Metro Manila</p>
+            <h1 className="text-[10px] font-semibold uppercase tracking-tight">REPUBLIC OF THE PHILIPPINES</h1>
+            <h2 className="text-base font-bold uppercase mt-0.5">OFFICE OF THE SENIOR CITIZENS AFFAIRS (OSCA)</h2>
+            <p className="text-[10px] font-medium mt-0.5">City of San Juan, Metro Manila</p>
             
-            <div className="mt-4 mb-6 py-1.5 border-y border-black/20 w-full">
-              <h3 className="text-base font-bold uppercase tracking-tighter italic">APPLICATION FORM FOR NEW SENIOR CITIZEN</h3>
+            <div className="mt-3 mb-5 py-1.5 border-y border-black/20 w-full">
+              <h3 className="text-xs font-bold uppercase tracking-tight italic">APPLICATION FORM FOR NEW SENIOR CITIZEN</h3>
             </div>
           </div>
 
-          <div className="space-y-5 text-[12px]">
+          <div className="space-y-4 text-[11px]">
             {/* Top Row */}
             <div className="flex justify-between items-end gap-8">
-              <div className="flex-1 border-b border-black min-h-[2rem] flex items-end">
+              <div className="flex-1 min-h-[1.8rem] flex items-end">
                 <span className="font-bold pr-1">FMZ-</span>
-                <span className="flex-1 pb-0.5 text-left font-mono">________-________</span>
+                <div className="flex-1 border-b border-black pb-0.5 text-left font-poppins min-h-[1.3rem]" />
               </div>
-              <div className="flex-1 border-b border-black min-h-[2rem] flex items-end">
-                <span className="font-bold whitespace-nowrap pr-2">DATE APPLIED: </span>
-                <span className="flex-1 pb-0.5 text-center font-bold">{formatDate(record.application_date)}</span>
+              <div className="flex-1 min-h-[1.8rem] flex items-end">
+                <span className="font-bold whitespace-nowrap pr-2">DATE APPLIED:</span>
+                <div className="flex-1 border-b border-black pb-0.5 text-center font-bold min-h-[1.3rem]">
+                  {formatDate(record.application_date)}
+                </div>
               </div>
             </div>
 
             <div className="flex justify-between items-end gap-8">
-              <div className="flex-1 border-b border-black min-h-[2rem] flex items-end">
-                <span className="font-bold whitespace-nowrap pr-2">OSCA ID NO: </span>
-                <span className="flex-1 pb-0.5 text-center font-mono font-bold tracking-tight">{record.scid_number || '____________________'}</span>
+              <div className="flex-1 min-h-[1.8rem] flex items-end">
+                <span className="font-bold whitespace-nowrap pr-2">OSCA ID NO:</span>
+                <div className="flex-1 border-b border-black pb-0.5 text-center font-poppins font-bold tracking-tight min-h-[1.3rem]">
+                  {record.scid_number || ''}
+                </div>
               </div>
-              <div className="flex-1 border-b border-black min-h-[2rem] flex items-end">
-                <span className="font-bold whitespace-nowrap pr-2">SENIOR CONTACT NO.: </span>
-                <span className="flex-1 pb-0.5 text-center font-mono">{record.contact_number || '____________________'}</span>
+              <div className="flex-1 min-h-[1.8rem] flex items-end">
+                <span className="font-bold whitespace-nowrap pr-2">SENIOR CONTACT NO.:</span>
+                <div className="flex-1 border-b border-black pb-0.5 text-center font-poppins min-h-[1.3rem]">
+                  {record.contact_number || ''}
+                </div>
               </div>
             </div>
 
             {/* Name Row */}
             <div className="flex flex-col gap-1">
-               <div className="flex items-end border-b border-black min-h-[2.5rem]">
-                  <span className="font-bold pr-2">NAME: </span>
-                  <span className="flex-1 pb-0.5 text-center uppercase font-bold text-base">
+               <div className="flex items-end min-h-[2.2rem]">
+                  <span className="font-bold pr-2 whitespace-nowrap">NAME:</span>
+                  <div className="flex-1 border-b border-black pb-0.5 text-center uppercase font-bold text-sm min-h-[1.5rem]">
                     {record.full_name || `${record.last_name || ''}, ${record.first_name || ''} ${record.middle_name || ''}`}
-                  </span>
+                  </div>
                </div>
-               <div className="flex justify-between text-[10px] font-bold text-center italic">
-                  <span className="flex-1">(LASTNAME)</span>
-                  <span className="flex-1">(FIRSTNAME)</span>
-                  <span className="flex-1">(MIDDLENAME)</span>
+               <div className="flex text-[9px] font-bold text-center italic">
+                  <span className="w-[50px]"></span>
+                  <div className="flex-1 flex justify-between">
+                     <span className="flex-1">(LASTNAME)</span>
+                     <span className="flex-1">(FIRSTNAME)</span>
+                     <span className="flex-1">(MIDDLENAME)</span>
+                  </div>
                </div>
             </div>
 
             {/* Demographics Row */}
             <div className="flex items-end gap-6 h-auto">
-               <div className="w-[10%] border-b border-black pb-0.5 min-h-[2.5rem] flex items-end">
-                  <span className="font-bold">SEX: </span>
-                  <span className="ml-2 flex-1 text-center uppercase">{record.sex || '_____'}</span>
+               <div className="w-[15%] min-h-[2.2rem] flex items-end">
+                  <span className="font-bold pr-1">SEX:</span>
+                  <div className="flex-1 border-b border-black pb-0.5 text-center uppercase min-h-[1.3rem]">
+                    {record.sex || ''}
+                  </div>
                </div>
                <div className="flex-1 flex flex-col">
-                  <div className="flex items-end border-b border-black min-h-[2.5rem]">
-                    <span className="font-bold whitespace-nowrap pr-2">DATE OF BIRTH: </span>
-                    <span className="flex-1 text-center pb-0.5 uppercase">{formatDate(record.birth_date)}</span>
+                  <div className="flex items-end min-h-[2.2rem]">
+                    <span className="font-bold whitespace-nowrap pr-2">DATE OF BIRTH:</span>
+                    <div className="flex-1 border-b border-black text-center pb-0.5 uppercase min-h-[1.3rem]">
+                      {formatDate(record.birth_date)}
+                    </div>
                   </div>
-                  <span className="text-[10px] font-bold text-center italic mt-1">(MM/DD/YYYY)</span>
+                  <div className="flex text-[9px] font-bold text-center italic mt-1">
+                    <span className="w-[95px]"></span>
+                    <span className="flex-1">(MM/DD/YYYY)</span>
+                  </div>
                </div>
-               <div className="flex-[1.5] flex items-end border-b border-black min-h-[2.5rem]">
-                  <span className="font-bold whitespace-nowrap pr-2">PLACE OF BIRTH: </span>
-                  <span className="flex-1 text-center pb-0.5 uppercase truncate">{record.birth_place || '____________________'}</span>
+               <div className="flex-[1.5] flex items-end min-h-[2.2rem]">
+                  <span className="font-bold whitespace-nowrap pr-2">PLACE OF BIRTH:</span>
+                  <div className="flex-1 border-b border-black text-center pb-0.5 uppercase truncate min-h-[1.3rem]">
+                    {record.birth_place || ''}
+                  </div>
                </div>
-               <div className="w-[10%] flex items-end border-b border-black min-h-[2.5rem]">
-                  <span className="font-bold">AGE: </span>
-                  <span className="ml-2 flex-1 text-center">{record.age || '____'}</span>
+               <div className="w-[12%] flex items-end min-h-[2.2rem]">
+                  <span className="font-bold pr-1">AGE:</span>
+                  <div className="flex-1 border-b border-black text-center pb-0.5 min-h-[1.3rem]">
+                    {record.age || ''}
+                  </div>
                </div>
             </div>
 
             {/* Address Row */}
             <div className="flex items-end gap-10">
-               <div className="flex-[3] border-b border-black min-h-[2.5rem] flex items-end">
-                  <span className="font-bold pr-2 whitespace-nowrap">ADDRESS: </span>
-                  <span className="flex-1 pb-0.5 uppercase text-center">{record.address || '__________________________________________________'}</span>
+               <div className="flex-[3] min-h-[2.2rem] flex items-end">
+                  <span className="font-bold pr-2 whitespace-nowrap">ADDRESS:</span>
+                  <div className="flex-1 border-b border-black pb-0.5 uppercase text-center min-h-[1.3rem]">
+                    {record.address || ''}
+                  </div>
                </div>
-               <div className="flex-1 border-b border-black min-h-[2.5rem] flex items-end">
-                  <span className="font-bold pr-2 whitespace-nowrap">CITIZENSHIP: </span>
-                  <span className="flex-1 pb-0.5 uppercase text-center">{record.citizenship || '____________________'}</span>
+               <div className="flex-1 min-h-[2.2rem] flex items-end">
+                  <span className="font-bold pr-2 whitespace-nowrap">CITIZENSHIP:</span>
+                  <div className="flex-1 border-b border-black pb-0.5 uppercase text-center min-h-[1.3rem]">
+                    {record.citizenship || ''}
+                  </div>
                </div>
             </div>
 
             {/* Civil Status Row */}
-            <div className="flex items-center pt-2">
-               <span className="font-bold text-red-500 mr-4">CIVIL STATUS:</span>
-               <div className="flex items-center gap-6 font-bold uppercase text-[11px]">
-                  <span className="flex items-center gap-1.5 font-serif text-[14px]">({record.civil_status?.toLowerCase() === 'single' ? '✓' : ' '}) SINGLE</span>
-                  <span className="flex items-center gap-1.5 font-serif text-[14px]">({record.civil_status?.toLowerCase() === 'married' ? '✓' : ' '}) MARRIED</span>
-                  <span className="flex items-center gap-1.5 font-serif text-[14px]">({record.civil_status?.toLowerCase() === 'widow' ? '✓' : ' '}) WIDOW</span>
-                  <span className="flex items-center gap-1.5 font-serif text-[14px]">({record.civil_status?.toLowerCase() === 'widower' ? '✓' : ' '}) WIDOWER</span>
-                  <span className="flex items-center gap-1.5 font-serif text-[14px]">({record.civil_status?.toLowerCase() === 'separated' || record.civil_status?.toLowerCase() === 'seperated' ? '✓' : ' '}) SEPERATED</span>
+            <div className="flex items-center pt-1">
+               <span className="font-bold mr-4">CIVIL STATUS:</span>
+               <div className="flex items-center gap-5 font-bold uppercase text-[10px]">
+                  <span className="flex items-center gap-1 font-poppins text-[10px]">({record.civil_status?.toLowerCase() === 'single' ? '✓' : ' '}) SINGLE</span>
+                  <span className="flex items-center gap-1 font-poppins text-[10px]">({record.civil_status?.toLowerCase() === 'married' ? '✓' : ' '}) MARRIED</span>
+                  <span className="flex items-center gap-1 font-poppins text-[10px]">({record.civil_status?.toLowerCase() === 'widow' ? '✓' : ' '}) WIDOW</span>
+                  <span className="flex items-center gap-1 font-poppins text-[10px]">({record.civil_status?.toLowerCase() === 'widower' ? '✓' : ' '}) WIDOWER</span>
+                  <span className="flex items-center gap-1 font-poppins text-[10px]">({record.civil_status?.toLowerCase() === 'separated' || record.civil_status?.toLowerCase() === 'seperated' ? '✓' : ' '}) SEPERATED</span>
                </div>
             </div>
 
             {/* Emergency Contact */}
             <div className="flex items-end gap-10">
-              <div className="flex-[2] border-b border-black min-h-[2.5rem] flex items-end">
-                <span className="font-bold pr-2 whitespace-nowrap">CONTACT PERSON INCASE OF EMERGENCY: </span>
-                <span className="flex-1 pb-0.5 uppercase text-center">{record.emergency_contact_person || '________________________________'}</span>
-              </div>
-              <div className="flex-1 border-b border-black min-h-[2.5rem] flex items-end">
-                <span className="font-bold pr-2 whitespace-nowrap">CONTACT NO.: </span>
-                <span className="flex-1 pb-0.5 text-center">{record.emergency_contact_number || '____________________'}</span>
-              </div>
+               <div className="flex-[2] min-h-[2.2rem] flex items-end">
+                 <span className="font-bold pr-2 whitespace-nowrap">CONTACT PERSON INCASE OF EMERGENCY:</span>
+                 <div className="flex-1 border-b border-black pb-0.5 uppercase text-center min-h-[1.3rem]">
+                   {record.emergency_contact_person || ''}
+                 </div>
+               </div>
+               <div className="flex-1 min-h-[2.2rem] flex items-end">
+                 <span className="font-bold pr-2 whitespace-nowrap">CONTACT NO.:</span>
+                 <div className="flex-1 border-b border-black pb-0.5 text-center min-h-[1.3rem]">
+                   {record.emergency_contact_number || ''}
+                 </div>
+               </div>
             </div>
 
             {/* Question */}
-            <div className="pt-4 space-y-2">
-              <p className="font-bold leading-relaxed">
+            <div className="pt-2 space-y-1.5">
+              <p className="font-bold leading-relaxed text-[11px]">
                 ARE YOU WILLING TO BE A MEMBER OF THE FEDERATION OF SENIOR CITIZEN ASSOCIATION IN YOUR BARANGAY?
               </p>
               <div className="flex gap-10">
@@ -259,66 +275,38 @@ export const OscaApplicationForm = ({ record, isOpen, onClose }: OscaApplication
             </div>
 
             {/* Certification */}
-            <div className="pt-6">
-              <p className="leading-relaxed font-medium">
+            <div className="pt-4">
+              <p className="leading-relaxed font-semibold text-[11px]">
                 I HEREBY CERTIFY THAT THE FOREGOING FACTS ARE TRUTHFUL STATEMENT OF MY CITIZENSHIP AND AGE.
               </p>
             </div>
 
             {/* Signatures */}
-            <div className="pt-12 grid grid-cols-5 items-end">
-               <div className="col-span-2 col-start-3 text-center space-y-2">
+            <div className="pt-8 grid grid-cols-5 items-end">
+               <div className="col-span-2 col-start-3 text-center space-y-1.5">
                   <div className="h-10 flex items-center justify-center">
                     {record.signature_url && (
-                      <img src={record.signature_url} className="h-12 object-contain" alt="Signature" referrerPolicy="no-referrer" />
+                      <img src={record.signature_url} className="h-10 object-contain" alt="Signature" referrerPolicy="no-referrer" />
                     )}
                   </div>
                   <div className="border-t border-black w-full"></div>
-                  <p className="text-[11px] font-bold uppercase tracking-tight">APPLICANT SIGNATURE</p>
+                  <p className="text-[10px] font-bold uppercase tracking-tight">APPLICANT SIGNATURE</p>
                </div>
             </div>
 
-            <div className="pt-12 grid grid-cols-5">
-              <div className="col-span-2 col-start-3 text-center space-y-8">
-                  <p className="text-xs font-bold uppercase tracking-widest">APPROVED BY:</p>
+            <div className="pt-8 grid grid-cols-5">
+              <div className="col-span-2 col-start-3 text-center space-y-6">
+                  <p className="text-[10px] font-bold uppercase tracking-wider">APPROVED BY:</p>
                   
                   <div className="space-y-0.5">
                     <div className="border-b border-black w-full min-w-[200px] mb-1 pb-1">
-                      <p className="text-base font-bold uppercase tracking-tighter">JAMES L. CHOA</p>
+                      <p className="text-sm font-bold uppercase tracking-tight">JAMES L. CHOA</p>
                     </div>
-                    <p className="text-[11px] font-bold uppercase tracking-widest leading-none">OIC-OSCA</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider leading-none">OIC-OSCA</p>
                   </div>
               </div>
             </div>
 
-            {/* Requirements */}
-            <div className="pt-8 space-y-4">
-              <p className="font-black border-b-2 border-black w-fit uppercase tracking-tighter text-sm">LIST OF REQUIREMENTS:</p>
-              <ol className="list-decimal pl-5 space-y-4 font-medium uppercase text-[12px] tracking-tighter leading-tight">
-                <li>
-                  <span className="underline">BIRTH CERTIFICATE</span>, <span className="underline">PHILIPPINE PASSPORT</span>, OR <span className="underline">NATIONAL IDENTIFICATION</span>
-                </li>
-                <li className="space-y-4">
-                  ANY IDENTIFICATION CARD TO SHOW PROOF OF RESIDENCY IN SAN JUAN ARE THE FOLLOWING:
-                  <ul className="list-none pt-4 space-y-2 pl-4">
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> VOTERS ID OR VOTER CERTIFICATE</li>
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> DRIVERS LICENCE</li>
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> BARANGAY ID OR BARANGAY CERTIFICATE OF RESIDENCY</li>
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> TIN ID</li>
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> UMID ID</li>
-                    <li className="flex items-center gap-3"><span className="text-[10px]">❖</span> PHILHEALTH ID</li>
-                  </ul>
-                </li>
-              </ol>
-            </div>
-
-            {/* Warning */}
-            <div className="pt-8">
-              <p className="text-red-500 font-black text-sm uppercase mb-1">WARNING!</p>
-              <p className="text-[11px] font-bold uppercase leading-tight tracking-tight">
-                ANY UNTRUTHFUL STATEMENT OF FACTS IN THIS APPLICATION FORM CONSTITUTE FALCIFICATION OF PUBLIC DOCUMENT WHICH IS PUNISHABLE UNDER THE REVISED PENAL CODE.
-              </p>
-            </div>
           </div>
         </div>
       </div>
