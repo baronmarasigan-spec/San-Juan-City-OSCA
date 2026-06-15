@@ -163,13 +163,13 @@ export const IDCard = ({ record, zoom = 1, viewSide: controlledViewSide }: IDCar
             <div className="p-4 flex flex-col flex-1">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-[8px] font-black tracking-tighter uppercase whitespace-nowrap">In Case of Emergency Please Notify</span>
-                  <div className="flex-1 border-b border-black text-center">
+                  <div className="flex-1 border-b border-black text-left px-3">
                       <p className="text-[8px] font-black uppercase tracking-tight">{record.emergency_contact_person || record.emergency_contact?.person || '---'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mb-3 pl-12">
                   <span className="text-[8px] font-black tracking-tighter uppercase whitespace-nowrap">Contact No.</span>
-                  <div className="flex-1 border-b border-black text-center">
+                  <div className="flex-1 border-b border-black text-left px-3">
                       <p className="text-[8px] font-black tracking-wider">{record.emergency_contact_number || record.emergency_contact?.number || '---'}</p>
                   </div>
                 </div>
